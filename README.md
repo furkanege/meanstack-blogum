@@ -9,10 +9,7 @@
 $ npm install
 $ cd client/
 $ npm install
+$ cd ..
 $ npm run build
 $ npm start
-$ Server: http://localhost:8080
-$ cd client/
-$ ng serve
-$ npm start
-$ http://localhost:8080
+$ Server'da çalışacak: http://localhost:8080
