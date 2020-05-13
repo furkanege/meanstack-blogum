@@ -1,0 +1,49 @@
+<div class="jumbotron text-center">
+  <h1>MEAN Stack Uygulamam</h1>
+  <p class="lead">MEAN Stack uygulamama hoş geldiniz.</p>
+  <div>
+    <a *ngIf="!authService.loggedIn()" routerLink="/register" class="btn btn-primary">Kayıt ol</a>
+    <a *ngIf="!authService.loggedIn()" routerLink="/login" class="btn btn-default">Giriş yap</a>
+    <a *ngIf="authService.loggedIn()" routerLink="/blog" class="btn btn-success">Blog'u gör</a>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img src="https://ozguryazilim.com.tr/wp-content/uploads/2016/03/mongodb-logo.png" alt="MongoDB Fotoğraf" width="140" height="140">
+      <div class="caption">
+        <h3>MongoDB</h3>
+        <p>MongoDB, ücretsiz ve açık kaynaklı bir çapraz platform belge yönelimli veritabanı programıdır. Bu NoSQL veritabanı programı şemaları olan JSON benzeri belgeleri kullanır.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    <div class=thumbnail> <img src="https://cdn.clipart.email/bf34772ba9dcc6e4b285307200526c32_fileexpressjspng-wikimedia-commons_465-141.png" alt="ExpressJS Fotoğraf" width="140" height="140">
+      <div class=caption>
+        <h3>ExpressJS</h3>
+        <p>Express.js bir Node.js çerçevesidir. Node.js, web ve ağ uygulamaları oluşturmak için JavaScript'in Web Tarayıcılarının dışında kullanılmasına izin veren bir platformdur.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    <div class=thumbnail> <img src="https://frontendlabepam.github.io/FL5/angular/assets/img/angular-js-logo.png" alt="Angular Fotoğraf" width="140" height="140">
+      <div class=caption>
+        <h3>Angular</h3>
+        <p>Angular, mobil ve masaüstü web uygulamaları oluşturmak için bir geliştirme platformudur.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-md-4">
+    <div class=thumbnail> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/590px-Node.js_logo.svg.png" alt="NodeJS Fotoğraf" width="140" height="140">
+      <div class=caption>
+        <h3>NodeJS</h3>
+        <p>Node.js, Chrome'un V8 JavaScript motoru üzerine kurulmuş bir JavaScript çalışma zamanıdır.</p>
+      </div>
+    </div>
+  </div>
+
+</div>

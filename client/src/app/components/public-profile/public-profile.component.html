@@ -1,0 +1,12 @@
+<h1 class="page-header">Herkese Açık Profil</h1>
+
+<div class="row show-hide-message" *ngIf="message">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<ul *ngIf="foundProfile" class="list-group">
+  <li class="list-group-item"><strong>Kullanıcı adı: </strong>{{ username }}</li>
+  <li class="list-group-item"><strong>E posta: </strong>{{ email }}</li>
+</ul>

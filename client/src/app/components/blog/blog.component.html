@@ -1,0 +1,129 @@
+<h1 class="page-header">Blog yazıları</h1>
+
+<div class="row show-hide-message" *ngIf="message && newPost">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<button type="button" name="button" class="btn btn-warning" *ngIf="!newPost" (click)="newBlogForm()">Yeni yazı</button>
+
+<button [disabled]="loadingBlogs" type="button" name="button" class="btn btn-default" *ngIf="!newPost" (click)="reloadBlogs()"><span class="glyphicon glyphicon-repeat"></span>&nbsp;&nbsp;Yenile</button>
+
+<br />
+<br />
+
+<form [formGroup]="form" name="blogForm" (submit)="onBlogSubmit()" *ngIf="newPost">
+  <div class="form-group">
+    <label for="title">Başlık</label>
+    <div [ngClass]="{'has-success': form.controls.title.valid, 'has-error': form.controls.title.dirty && form.controls.title.errors}">
+      <input type="text" name="title" class="form-control" placeholder="*Blog başlığı" autocomplete="off" formControlName="title" />
+      <ul class="help-block">
+        <li *ngIf="form.controls.title.dirty && form.controls.title.errors?.required">Bu alan gereklidir.</li>
+        <li *ngIf="(form.controls.title.dirty && form.controls.title.errors?.minlength) || (form.controls.title.dirty && form.controls.title.errors?.maxlength)">Maksimum uzunluk: 50, Minimum uzunluk: 5</li>
+        <li *ngIf="form.controls.title.dirty && form.controls.title.errors?.alphaNumericValidation">Bir harf veya sayı olmalı</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="body">İçerik</label>
+    <div [ngClass]="{'has-success': form.controls.body.valid, 'has-error': form.controls.body.dirty && form.controls.body.errors}">
+      <textarea name="body" rows="8" cols="80" placeholder="*İçerik" class="form-control" formControlName="body"></textarea>
+      <ul class="help-block">
+        <li *ngIf="form.controls.body.dirty && form.controls.body.errors?.required">Bu alan gereklidir.</li>
+        <li *ngIf="(form.controls.body.dirty && form.controls.body.errors?.minlength) || (form.controls.body.dirty && form.controls.body.errors?.maxlength)">Maksimum uzunluk: 500, Min uzunluk: 5</li>
+      </ul>
+    </div>
+  </div>
+
+  <button [disabled]="processing" type="button" name="button" (click)="goBack()" class="btn btn-warning">Geri dön</button>
+  <button [disabled]="processing || !form.valid" type="submit" name="button" class="btn btn-success">Gönder</button>
+
+</form>
+
+<div *ngIf="!newPost">
+  <div class="panel panel-default" *ngFor="let blog of blogPosts">
+
+    <div class="panel-heading">
+      <h3 class="panel-title">{{ blog.title }}</h3>
+    </div>
+
+    <div class="panel-body">
+      {{ blog.body }}
+    </div>
+
+    <div class="panel-footer">
+      <strong>Yazan: </strong>{{ blog.createdBy }}
+      <br />
+      <strong>Tarih: </strong>{{ blog.createdAt | date:'MMM dd, yyyy' }}
+      <br />
+      <div *ngIf="username === blog.createdBy">
+        <strong>Beğeniler: </strong>{{ blog.likes }}
+        <br />
+        <strong>Beğenmemeler: </strong>{{ blog.dislikes }}
+      </div>
+
+      <a [routerLink]="['/edit-blog/', blog._id]" *ngIf="username === blog.createdBy"><button type="button" name="button" class="btn btn-sm btn-info">Düzenle</button></a>
+      <a [routerLink]="['/delete-blog/', blog._id]" *ngIf="username === blog.createdBy"><button type="button" name="button" class="btn btn-sm btn-danger">Sil</button></a>
+
+      <div class="dropdown">
+        <button [disabled]="blog.likedBy.indexOf(username) > -1" type="button" name="button" class="btn btn-sm btn-success" *ngIf="username !== blog.createdBy" (click)="likeBlog(blog._id)"><span class="glyphicon glyphicon-thumbs-up">&nbsp;</span>Beğenmeler: {{ blog.likes }}</button>
+        <div class="dropdown-content">
+          <a [routerLink]="['/user/', liker]" *ngFor="let liker of blog.likedBy">{{ liker }}</a>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button [disabled]="blog.dislikedBy.indexOf(username) > -1" type="button" name="button" class="btn btn-sm btn-warning" *ngIf="username !== blog.createdBy" (click)="dislikeBlog(blog._id)"><span class="glyphicon glyphicon-thumbs-down">&nbsp;</span>Beğenmemeler: {{ blog.dislikes }}</button>
+        <div class="dropdown-content">
+          <a [routerLink]="['/user/', disliker]" *ngFor="let disliker of blog.dislikedBy">{{ disliker }}</a>
+        </div>
+      </div>
+
+    </div>
+
+    <ul class="list-group">
+      <li class="list-group-item">
+        <button type="button" name="button" class="btn btn-sm btn-danger" (click)="draftComment(blog._id)" [disabled]="newComment.indexOf(blog._id) > -1">Yorum Gönder</button>
+        <br />
+        <br />
+        <div *ngIf="newComment.indexOf(blog._id) > -1">
+
+          <form [formGroup]="commentForm">
+            <textarea name="comment" rows="10" cols="30" class="form-control" formControlName="comment"></textarea>
+            <div [ngClass]="{'has-success': !commentForm.controls.comment.errors && commentForm.controls.comment.dirty, 'has-error': commentForm.controls.comment.dirty && commentForm.controls.comment.errors}">
+              <ul class="help-block">
+                <li *ngIf="commentForm.controls.comment.errors?.required && commentForm.controls.comment.dirty">Bu alan gereklidir.</li>
+                <li *ngIf="(commentForm.controls.comment.errors?.maxlength && commentForm.controls.comment.dirty) ||(commentForm.controls.comment.errors?.minlength && commentForm.controls.comment.dirty)">Yorum en az 1 karakter, en fazla 200 karakter olmalıdır.</li>
+              </ul>
+            </div>
+            <button [disabled]="!commentForm.valid || processing" type="submit" name="button" class="btn btn-sm btn-info" (click)="postComment(blog._id)">İleti</button>
+            <button [disabled]="processing" type="button" name="button" class="btn btn-sm btn-danger" (click)="cancelSubmission(blog._id)">İptal</button>
+          </form>
+
+        </div>
+
+        <li *ngIf="enabledComments.indexOf(blog._id) === -1 && blog.comments.length > 0" class="list-group-item">
+          <span (click)="expand(blog._id)">
+            Show comments&nbsp;&nbsp;
+            <div class="glyphicon glyphicon-comment"></div>
+          </span>
+        </li>
+
+        <li *ngIf="enabledComments.indexOf(blog._id) > -1" class="list-group-item">
+          <span (click)="collapse(blog._id)">
+            Hide Comments&nbsp;&nbsp;
+            <div class="glyphicon glyphicon-comment"></div>
+          </span>
+        </li>
+
+        <div *ngIf="enabledComments.indexOf(blog._id) > -1">
+          <li *ngFor="let comment of blog.comments" class="list-group-item">
+            <strong>{{ comment.commentator }}:</strong> {{ comment.comment }}
+          </li>
+        </div>
+    </ul>
+
+  </div>
+</div>

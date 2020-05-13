@@ -1,0 +1,62 @@
+<h1 class="page-header">Kayıt Sayfası</h1>
+
+<div class="row show-hide-message">
+  <div [ngClass]="messageClass">
+    {{ message }}
+  </div>
+</div>
+
+<form [formGroup]="form" (submit)="onRegisterSubmit()">
+
+  <div class="form-group">
+    <label for="username">Kullanıcı adı</label>
+    <div [ngClass]="{'has-error': (form.controls.username.errors && form.controls.username.dirty) || (!usernameValid && form.controls.username.dirty), 'has-success': !form.controls.username.errors && usernameValid}">
+      <input type="text" name="username" class="form-control" autocomplete="off" placeholder="*furkan" formControlName="username" (blur)="checkUsername()"  />
+      <ul class="help-block">
+        <li *ngIf="form.controls.username.errors?.required && form.controls.username.dirty">Bu alan gereklidir</li>
+        <li *ngIf="form.controls.username.errors?.minlength && form.controls.username.dirty || form.controls.username.errors?.maxlength && form.controls.username.dirty ">Minimum karakter sayısı: 3, Maksimum karakter sayısı: 15</li>
+        <li *ngIf="form.controls.username.errors?.validateUsername && form.controls.username.dirty">Kullanıcı adının özel bir karakteri olmamalıdır</li>
+        <li *ngIf="usernameMessage">{{ usernameMessage }}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="email">E posta</label>
+    <div [ngClass]="{'has-error': (form.controls.email.errors && form.controls.email.dirty) || (!emailValid && form.controls.email.dirty), 'has-success': !form.controls.email.errors && emailValid}">
+      <input type="text" name="email" class="form-control" autocomplete="off" placeholder="*e@mail.com" formControlName="email" (blur)="checkEmail()" />
+      <ul class="help-block">
+        <li *ngIf="form.controls.email.errors?.required && form.controls.email.dirty">Bu alan gereklidir</li>
+        <li *ngIf="(form.controls.email.errors?.minlength && form.controls.email.dirty || form.controls.email.errors?.maxlength && form.controls.email.dirty ) && form.controls.email.dirty">Minimum karakter sayısı: 5, Maksimum karakter sayısı: 30</li>
+        <li *ngIf="form.controls.email.errors?.validateEmail && form.controls.email.dirty">bu geçerli bir e-posta olmalı</li>
+        <li *ngIf="emailMessage">{{ emailMessage}}</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="password">Şifre</label>
+    <div [ngClass]="{'has-error': (form.controls.password.errors && form.controls.password.dirty), 'has-success': !form.controls.password.errors}">
+      <input type="password" name="password" class="form-control" autocomplete="off" placeholder="*S1freniz" formControlName="password" />
+      <ul class="help-block">
+        <li *ngIf="form.controls.password.errors?.required && form.controls.password.dirty">Bu alan gereklidir</li>
+        <li *ngIf="form.controls.password.errors?.minlength && form.controls.password.dirty || form.controls.password.errors?.maxlength && form.controls.password.dirty ">Minimum karakter sayısı: 8, Maksimum karakter sayısı: 35</li>
+        <li *ngIf="form.controls.password.errors?.validatePassword && form.controls.password.dirty">Şifre en az 8 karakter olmalı, ancak 35 karakterden fazla olmamalıdır</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="confirm">Şifreyi Onayla</label>
+    <div [ngClass]="{'has-error': (form.controls.confirm.errors && form.controls.confirm.dirty) || (form.errors?.matchingPasswords && form.controls.confirm.dirty), 'has-success': !form.controls.confirm.errors && !form.errors?.matchingPasswords}">
+      <input type="password" name="confirm" class="form-control" autocomplete="off" placeholder="*tekrar S1freniz" formControlName="confirm" />
+      <ul class="help-block">
+        <li *ngIf="form.controls.confirm.errors?.required && form.controls.confirm.dirty">Bu alanın doldurulması zorunludur</li>
+        <li *ngIf="form.errors?.matchingPasswords && form.controls.confirm.dirty">Parola eşleşmedi</li>
+      </ul>
+    </div>
+  </div>
+
+  <input [disabled]="!form.valid || processing || !emailValid || !usernameValid" type="submit" class="btn btn-primary" value="Gönder" />
+
+</form>
